@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_move_form_direct_grn_link" model="ir.ui.view">
+        <field name="name">account.move.form.direct.grn.link</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_grn_pickings"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-truck"
+                        invisible="grn_picking_count == 0">
+                    <field name="grn_picking_count" widget="statinfo" string="Receipts (GRN)"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

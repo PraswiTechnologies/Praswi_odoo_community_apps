@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_picking_form_direct_delivery_inv" model="ir.ui.view">
+        <field name="name">stock.picking.form.direct.delivery.inv</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_create_delivery_customer_invoice"
+                        string="Create Draft Invoice"
+                        type="object"
+                        class="btn-primary"
+                        invisible="not is_direct_delivery or state != 'done' or delivery_invoicing_status == 'invoiced'"/>
+            </xpath>
+
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_delivery_customer_invoices"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-pencil-square-o"
+                        invisible="not is_direct_delivery or delivery_invoice_count == 0">
+                    <field name="delivery_invoice_count" widget="statinfo" string="Invoices"/>
+                </button>
+            </xpath>
+
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="is_direct_delivery" invisible="1"/>
+                <field name="sale_currency_id"
+                       invisible="not is_direct_delivery"
+                       readonly="state in ('done', 'cancel')"/>
+                <field name="delivery_invoicing_status"
+                       widget="badge"
+                       decoration-success="delivery_invoicing_status == 'invoiced'"
+                       decoration-warning="delivery_invoicing_status == 'partial'"
+                       decoration-info="delivery_invoicing_status == 'to_invoice'"
+                       invisible="not is_direct_delivery or state != 'done'"/>
+            </xpath>
+
+            <xpath expr="//field[@name='move_ids']/list" position="inside">
+                <field name="is_direct_delivery_move" column_invisible="1"/>
+                <field name="sale_currency_id" column_invisible="1"/>
+                <field name="sale_unit_price"
+                       string="Sale Price"
+                       column_invisible="not parent.is_direct_delivery"
+                       readonly="parent.state in ('done', 'cancel')"/>
+                <field name="sale_price_subtotal"
+                       string="Subtotal"
+                       widget="monetary"
+                       options="{'currency_field': 'sale_currency_id'}"
+                       column_invisible="not parent.is_direct_delivery"/>
+                <field name="delivery_invoiced_qty"
+                       string="Invoiced Qty"
+                       optional="hide"
+                       column_invisible="not parent.is_direct_delivery or parent.state != 'done'"/>
+            </xpath>
+
+            <xpath expr="//field[@name='move_ids']" position="after">
+                <group class="oe_subtotal_footer" invisible="not is_direct_delivery">
+                    <field name="sale_amount_total"
+                           class="oe_subtotal_footer_separator"
+                           widget="monetary"
+                           options="{'currency_field': 'sale_currency_id'}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_server_consolidate_delivery_invoice" model="ir.actions.server">
+        <field name="name">Create Consolidated Draft Customer Invoice (No SO)</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_create_delivery_customer_invoice()</field>
+    </record>
+</odoo>
