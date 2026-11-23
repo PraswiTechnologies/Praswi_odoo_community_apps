@@ -1,6 +1,6 @@
 {
     "name": "Auto-Invoice on Delivery Validation",
-    "version": "20.0.1.0.2",
+    "version": "20.0.1.0.3",
     "category": "Sales/Inventory",
     "summary": "Automatically create (and optionally post) Customer Invoices when a Sales Order Delivery is validated.",
     "description": """
