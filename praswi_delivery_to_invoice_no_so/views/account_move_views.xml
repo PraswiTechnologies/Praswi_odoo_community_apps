@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_move_form_direct_delivery_link" model="ir.ui.view">
+        <field name="name">account.move.form.direct.delivery.link</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_delivery_pickings"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-truck"
+                        invisible="delivery_picking_count == 0">
+                    <field name="delivery_picking_count" widget="statinfo" string="Deliveries"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

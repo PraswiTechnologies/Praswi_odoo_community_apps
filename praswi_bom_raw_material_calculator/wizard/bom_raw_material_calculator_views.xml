@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bom_raw_material_calculator_form" model="ir.ui.view">
+        <field name="name">bom.raw.material.calculator.form</field>
+        <field name="model">bom.raw.material.calculator</field>
+        <field name="arch" type="xml">
+            <form string="BOM Raw Material Calculator" create="0" delete="0">
+                <header>
+                    <button name="action_calculate"
+                            string="Calculate Raw Materials"
+                            type="object"
+                            class="btn-primary"/>
+                    <button name="action_export_csv"
+                            string="Export CSV (Excel)"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="total_raw_materials == 0"/>
+                    <button name="action_print_pdf"
+                            string="Print PDF"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="total_raw_materials == 0"/>
+                    <button name="action_clear"
+                            string="Reset"
+                            type="object"
+                            class="btn-link"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Multi-Level BOM Raw Material Calculator</h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="explode_multi_level"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group invisible="total_raw_materials == 0">
+                            <field name="total_raw_materials"/>
+                            <field name="total_shortage_items"/>
+                            <field name="total_estimated_cost" widget="monetary"/>
+                        </group>
+                    </group>
+
+                    <separator string="1. Select Products, BOMs &amp; Quantities"/>
+                    <field name="line_ids">
+                        <list editable="bottom">
+                            <field name="product_id"/>
+                            <field name="product_tmpl_id" column_invisible="1"/>
+                            <field name="bom_id" options="{'no_create': True}"/>
+                            <field name="quantity"/>
+                            <field name="uom_id" options="{'no_create': True}"/>
+                        </list>
+                    </field>
+
+                    <separator string="2. Consolidated Raw Material Requirements (Procurement View)"
+                               invisible="total_raw_materials == 0"/>
+                    <field name="result_ids" invisible="total_raw_materials == 0">
+                        <list create="0" edit="0" delete="0"
+                              decoration-danger="shortage_qty &gt; 0"
+                              decoration-success="shortage_qty == 0">
+                            <field name="default_code" optional="show"/>
+                            <field name="product_id"/>
+                            <field name="uom_id"/>
+                            <field name="required_qty" sum="Total Required"/>
+                            <field name="qty_available"/>
+                            <field name="virtual_available" optional="show"/>
+                            <field name="shortage_qty" sum="Total Shortage"/>
+                            <field name="forecast_shortage_qty" optional="hide"/>
+                            <field name="currency_id" column_invisible="1"/>
+                            <field name="unit_cost" widget="monetary" optional="show"/>
+                            <field name="estimated_cost" widget="monetary" sum="Total Cost"/>
+                            <field name="used_in" optional="show"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bom_raw_material_calculator" model="ir.actions.act_window">
+        <field name="name">Raw Material Calculator</field>
+        <field name="res_model">bom.raw.material.calculator</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+
+    <menuitem id="menu_bom_raw_material_calculator"
+              name="Raw Material Calculator"
+              parent="mrp.menu_mrp_root"
+              action="action_bom_raw_material_calculator"
+              sequence="25"/>
+</odoo>

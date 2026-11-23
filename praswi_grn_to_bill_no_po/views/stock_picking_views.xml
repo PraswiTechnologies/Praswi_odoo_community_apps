@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_picking_form_direct_grn_bill" model="ir.ui.view">
+        <field name="name">stock.picking.form.direct.grn.bill</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_create_grn_vendor_bill"
+                        string="Create Draft Bill"
+                        type="object"
+                        class="btn-primary"
+                        invisible="not is_direct_grn or state != 'done' or grn_billing_status == 'billed'"/>
+            </xpath>
+
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_grn_vendor_bills"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-pencil-square-o"
+                        invisible="not is_direct_grn or grn_bill_count == 0">
+                    <field name="grn_bill_count" widget="statinfo" string="Vendor Bills"/>
+                </button>
+            </xpath>
+
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="is_direct_grn" invisible="1"/>
+                <field name="purchase_currency_id"
+                       invisible="not is_direct_grn"
+                       readonly="state in ('done', 'cancel')"/>
+                <field name="grn_billing_status"
+                       widget="badge"
+                       decoration-success="grn_billing_status == 'billed'"
+                       decoration-warning="grn_billing_status == 'partial'"
+                       decoration-info="grn_billing_status == 'to_bill'"
+                       invisible="not is_direct_grn or state != 'done'"/>
+            </xpath>
+
+            <xpath expr="//field[@name='move_ids']/list" position="inside">
+                <field name="is_direct_grn_move" column_invisible="1"/>
+                <field name="purchase_currency_id" column_invisible="1"/>
+                <field name="purchase_unit_price"
+                       string="Purchase Cost"
+                       column_invisible="not parent.is_direct_grn"
+                       readonly="parent.state in ('done', 'cancel')"/>
+                <field name="purchase_price_subtotal"
+                       string="Subtotal"
+                       widget="monetary"
+                       options="{'currency_field': 'purchase_currency_id'}"
+                       column_invisible="not parent.is_direct_grn"/>
+                <field name="grn_billed_qty"
+                       string="Billed Qty"
+                       optional="hide"
+                       column_invisible="not parent.is_direct_grn or parent.state != 'done'"/>
+            </xpath>
+
+            <xpath expr="//field[@name='move_ids']" position="after">
+                <group class="oe_subtotal_footer" invisible="not is_direct_grn">
+                    <field name="purchase_amount_total"
+                           class="oe_subtotal_footer_separator"
+                           widget="monetary"
+                           options="{'currency_field': 'purchase_currency_id'}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_server_consolidate_grn_vendor_bill" model="ir.actions.server">
+        <field name="name">Create Consolidated Draft Vendor Bill (No PO)</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_create_grn_vendor_bill()</field>
+    </record>
+</odoo>

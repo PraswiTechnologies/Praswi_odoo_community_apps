@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_picking_form_grn_gate_pass" model="ir.ui.view">
+        <field name="name">stock.picking.form.grn.gate.pass</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_generate_gate_pass"
+                        string="Generate Gate Pass"
+                        type="object"
+                        class="btn-secondary"
+                        invisible="picking_type_code != 'incoming' or gate_pass_number or state == 'cancel'"/>
+                <button name="action_mark_gate_out_time"
+                        string="Mark Gate Out"
+                        type="object"
+                        class="btn-secondary"
+                        invisible="picking_type_code != 'incoming' or not gate_pass_number or gate_out_time or state == 'cancel'"/>
+            </xpath>
+
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="gate_pass_number"
+                       invisible="picking_type_code != 'incoming' or not gate_pass_number"/>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Gate Pass" name="inward_gate_pass" invisible="picking_type_code != 'incoming'">
+                    <group>
+                        <group string="Vehicle &amp; Transport Details">
+                            <field name="gate_pass_number"/>
+                            <field name="gate_vehicle_no" placeholder="e.g. HR26DK1234"/>
+                            <field name="gate_transporter"/>
+                            <field name="gate_lr_no"/>
+                            <field name="gate_challan_no"/>
+                        </group>
+                        <group string="Driver &amp; Security Timings">
+                            <field name="gate_driver_name"/>
+                            <field name="gate_driver_phone"/>
+                            <field name="gate_in_time"/>
+                            <field name="gate_out_time"/>
+                            <field name="gate_security_officer"/>
+                        </group>
+                    </group>
+                    <group string="Security Remarks">
+                        <field name="gate_remarks" nolabel="1" placeholder="Seal condition, package count, weighbridge slip ref, etc."/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_inward_gate_pass" model="ir.actions.report">
+        <field name="name">Inward Gate Pass</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">praswi_grn_gate_pass.report_inward_gate_pass_document</field>
+        <field name="print_report_name">'Inward Gate Pass - %s' % (object.gate_pass_number or object.name)</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_inward_gate_pass_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2 style="text-align:center; margin-bottom:16px;">INWARD GATE PASS (GRN)</h2>
+
+                        <table class="table table-sm table-bordered mb-3">
+                            <tbody>
+                                <tr>
+                                    <th style="width:22%;">Gate Pass No.</th>
+                                    <td style="width:28%;"><span t-field="o.gate_pass_number"/></td>
+                                    <th style="width:22%;">GRN Reference</th>
+                                    <td style="width:28%;"><span t-field="o.name"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Supplier / Vendor</th>
+                                    <td><span t-field="o.partner_id"/></td>
+                                    <th>Source Document</th>
+                                    <td><span t-field="o.origin"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Vehicle Number</th>
+                                    <td><span t-field="o.gate_vehicle_no"/></td>
+                                    <th>Challan / Inv. No.</th>
+                                    <td><span t-field="o.gate_challan_no"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Transporter</th>
+                                    <td><span t-field="o.gate_transporter"/></td>
+                                    <th>LR / Bilty No.</th>
+                                    <td><span t-field="o.gate_lr_no"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Driver Name</th>
+                                    <td><span t-field="o.gate_driver_name"/></td>
+                                    <th>Driver Phone</th>
+                                    <td><span t-field="o.gate_driver_phone"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Vehicle In-Time</th>
+                                    <td><span t-field="o.gate_in_time"/></td>
+                                    <th>Vehicle Out-Time</th>
+                                    <td><span t-field="o.gate_out_time"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Security Officer</th>
+                                    <td colspan="3"><span t-field="o.gate_security_officer"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm table-bordered mt-3">
+                            <thead>
+                                <tr>
+                                    <th style="width:8%;">#</th>
+                                    <th style="width:52%;">Product</th>
+                                    <th style="width:15%;" class="text-end">Demand</th>
+                                    <th style="width:15%;" class="text-end">Received</th>
+                                    <th style="width:10%;">UoM</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="idx" t-value="0"/>
+                                <tr t-foreach="o.move_ids.filtered(lambda m: m.state != 'cancel')" t-as="move">
+                                    <t t-set="idx" t-value="idx + 1"/>
+                                    <td><t t-esc="idx"/></td>
+                                    <td><span t-field="move.product_id.display_name"/></td>
+                                    <td class="text-end"><span t-field="move.product_uom_qty"/></td>
+                                    <td class="text-end"><span t-field="move.quantity"/></td>
+                                    <td><span t-field="move.uom_id"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div t-if="o.gate_remarks" class="mt-3">
+                            <strong>Security Remarks:</strong>
+                            <p t-field="o.gate_remarks"/>
+                        </div>
+
+                        <div class="row mt-5 pt-4">
+                            <div class="col-4 text-center">
+                                <div style="border-top:1px solid #000; padding-top:6px;">Security Officer</div>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div style="border-top:1px solid #000; padding-top:6px;">Driver Signature</div>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div style="border-top:1px solid #000; padding-top:6px;">Store In-Charge</div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

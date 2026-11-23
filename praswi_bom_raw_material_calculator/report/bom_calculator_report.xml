@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_bom_raw_material_calc" model="ir.actions.report">
+        <field name="name">Raw Material Requirement Summary</field>
+        <field name="model">bom.raw.material.calculator</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">praswi_bom_raw_material_calculator.report_bom_raw_material_calc_doc</field>
+        <field name="print_report_name">'Raw Material Requirements'</field>
+    </record>
+
+    <template id="report_bom_raw_material_calc_doc">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2 style="text-align:center; margin-bottom:14px;">RAW MATERIAL REQUIREMENT SUMMARY</h2>
+
+                        <p>
+                            <strong>Company:</strong> <span t-field="o.company_id.name"/> |
+                            <strong>Multi-Level Explosion:</strong>
+                            <span t-if="o.explode_multi_level">Yes</span>
+                            <span t-else="">No (Level 1 Only)</span>
+                        </p>
+
+                        <h4 class="mt-3">Selected Products &amp; BOMs</h4>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Bill of Materials</th>
+                                    <th class="text-end">Quantity</th>
+                                    <th>UoM</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.line_ids" t-as="line">
+                                    <td><span t-field="line.product_id.display_name"/></td>
+                                    <td><span t-field="line.bom_id.display_name"/></td>
+                                    <td class="text-end"><span t-field="line.quantity"/></td>
+                                    <td><span t-field="line.uom_id.name"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4 class="mt-4">Aggregated Raw Materials Required</h4>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>SKU</th>
+                                    <th>Raw Material</th>
+                                    <th class="text-end">Required</th>
+                                    <th class="text-end">On Hand</th>
+                                    <th class="text-end">To Procure</th>
+                                    <th>UoM</th>
+                                    <th class="text-end">Est. Cost</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.result_ids" t-as="res">
+                                    <td><span t-field="res.default_code"/></td>
+                                    <td>
+                                        <span t-field="res.product_id.display_name"/>
+                                        <div style="font-size:10px; color:#555;" t-if="res.used_in">
+                                            Used in: <span t-field="res.used_in"/>
+                                        </div>
+                                    </td>
+                                    <td class="text-end"><span t-field="res.required_qty"/></td>
+                                    <td class="text-end"><span t-field="res.qty_available"/></td>
+                                    <td class="text-end"><strong><span t-field="res.shortage_qty"/></strong></td>
+                                    <td><span t-field="res.uom_id.name"/></td>
+                                    <td class="text-end">
+                                        <span t-field="res.estimated_cost" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="text-end mt-3">
+                            <strong>Total Estimated Raw Material Cost: </strong>
+                            <span t-field="o.total_estimated_cost" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
