@@ -1,6 +1,6 @@
 {
     "name": "Direct Delivery to Draft Customer Invoice (Without SO)",
-    "version": "20.0.1.1.0",
+    "version": "20.0.1.1.2",
     "category": "Inventory/Accounting",
     "summary": "Sale Price on Deliveries and Draft Customer Invoice creation without SO—letting native Odoo handle Taxes and Fiscal Position on the Invoice.",
     "description": """

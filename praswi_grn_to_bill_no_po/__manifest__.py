@@ -1,6 +1,6 @@
 {
     "name": "Direct GRN to Draft Vendor Bill (Without PO)",
-    "version": "20.0.1.1.0",
+    "version": "20.0.1.1.2",
     "category": "Inventory/Accounting",
     "summary": "Purchase Cost on Receipts (GRN) and Draft Vendor Bill creation without PO—letting native Odoo handle Taxes and Fiscal Position on the Bill.",
     "description": """

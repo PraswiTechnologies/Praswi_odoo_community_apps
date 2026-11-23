@@ -1,6 +1,6 @@
 {
     "name": "Multi-Level BOM Raw Material Calculator",
-    "version": "20.0.1.0.0",
+    "version": "20.0.1.0.2",
     "category": "Manufacturing/Inventory",
     "summary": "Standalone calculator to explode single or multi-level BOMs across multiple products and aggregate total raw material requirements for easy procurement.",
     "description": """

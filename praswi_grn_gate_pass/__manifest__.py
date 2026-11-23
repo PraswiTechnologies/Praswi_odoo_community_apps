@@ -1,6 +1,6 @@
 {
     "name": "Inward Gate Pass on GRN (Receipts)",
-    "version": "20.0.1.0.2",
+    "version": "20.0.1.0.4",
     "category": "Inventory/Warehouse",
     "summary": "Sequenced Inward Gate Pass on Receipts (GRN) with Vehicle/Driver/LR/Challan tracking, optional validation lock, and printable PDF.",
     "description": """
